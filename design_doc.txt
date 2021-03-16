@@ -1,0 +1,21 @@
+Initial design specifications:
+- JSON input of house specifications
+- Dockerized
+- curl testable API w/ Fast API
+- Log of model accuracy with MLFlow
+- Automatic numbered model artifact storage with comparison
+- Hash table with stored predictions
+
+References:
+https://github.com/cosmic-cortex/fastAPI-ML-quickstart
+https://machinelearningmastery.com/pytorch-tutorial-develop-deep-learning-models/
+
+
+FastAPI over Flask
+Reasons for:
+- This is a microservice not a full blown application. FastAPI is a leaner tool for that specific purpose.
+- Can be integrated with Pydantic for user input data validation.
+- Has performance similar to high-speed web APIs in Node or Go
+Reasons against:
+- Flask is a far more mature tool than FastAPI. This means support and information is far more rich for Flask over FastAPI.
+
