@@ -15,6 +15,7 @@ class Model:
         self.model = nn()
         self.X_train, self.X_test = inputDataset().prepare_data()
         self.root_path = Path(__file__).parent.parent.parent
+        self.load("76f2e23fe49748a4b1e65f6aa1560e27")
     
     def train(self):
         self.model.train(self.X_train)
@@ -27,10 +28,16 @@ class Model:
         self.model.predict(row)
 
     def save(self):
-        joblib.dump(self.model, Path(__file__).parent / "model_objects" /"ml_model.joblib")
+        if self.model is not None:
+            joblib.dump(self.model, Path(__file__).parent / "model_objects" /"ml_model.joblib")
+        else:
+            raise TypeError("There is no model object. Train the model with model.train() first.")
     
     def load(self, artifact_uri):
-        self.model = joblib.load(self.root_path / "mlruns" / "0" / artifact_uri / "artifacts" / "ml_model.joblib")
+        try:
+            self.model = joblib.load(self.root_path / "mlruns" / "0" / artifact_uri / "artifacts" / "ml_model.joblib")
+        except:
+            self.model = None
 
 
 if __name__ == "__main__":
