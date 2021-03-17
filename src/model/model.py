@@ -14,6 +14,7 @@ class Model:
     def __init__(self):
         self.model = nn()
         self.X_train, self.X_test = inputDataset().prepare_data()
+        self.n_features = len(self.X_train)
         self.root_path = Path(__file__).parent.parent.parent
         self.load("76f2e23fe49748a4b1e65f6aa1560e27")
     
@@ -25,7 +26,8 @@ class Model:
         self.metrics = self.model.test(self.X_test)
     
     def predict(self, row):
-        self.model.predict(row)
+        pred = self.model.predict(row)
+        return pred
 
     def save(self):
         if self.model is not None:
@@ -39,10 +41,11 @@ class Model:
         except:
             self.model = None
 
+def get_model():
+    return Model()
 
 if __name__ == "__main__":
     model = Model()
-    model.load("76f2e23fe49748a4b1e65f6aa1560e27")
     row = [0.00632,18.00,2.310,0,0.5380,6.5750,65.20,4.0900,1,296.0,15.30,396.90,4.98]
     model.predict(row)
     # with mlflow.start_run() as run:

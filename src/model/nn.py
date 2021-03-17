@@ -54,4 +54,4 @@ class nn():
         yhat = self.model(row)
         # retrieve numpy array
         yhat = yhat.detach().numpy()
-        print(yhat)
+        return yhat
