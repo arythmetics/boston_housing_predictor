@@ -1,16 +1,7 @@
-FROM ubuntu:19.10
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
 
-COPY ./src /src
-COPY requirements.txt /requirements.txt
+COPY requirements.txt /app/
 
-RUN apt-get update \
-    && apt-get install python3-dev python3-pip -y \
-    && pip3 install -r requirements.txt
+RUN pip install -r /app/requirements.txt
 
-ENV PYTHONPATH=/src
-WORKDIR /src
-
-EXPOSE 8000
-
-ENTRYPOINT ["uvicorn"]
-CMD ["api.main:app", "--host", "0.0.0.0"]
+COPY . /app
