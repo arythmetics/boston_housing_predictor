@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/arya/projects/boston_house_predictor/mlruns/0/9123751989ba44508a0a1b2d5a2cb8bb/artifacts
+end_time: 1616102174796
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 9123751989ba44508a0a1b2d5a2cb8bb
+run_uuid: 9123751989ba44508a0a1b2d5a2cb8bb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1616102162431
+status: 4
+tags: []
+user_id: arya
