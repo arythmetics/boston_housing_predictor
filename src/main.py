@@ -1,6 +1,14 @@
-from src.model.model import Model
+#debugging
+from pathlib import Path
+from fastapi.testclient import TestClient
+import sys, os
+sys.path.append(os.path.dirname(Path(__file__).parent))
+
+from src.model.model import Model, get_model
+n_features = Model().n_features
 from src.data.dataset import inputDataset
 
+import uvicorn
 from typing import List
 from fastapi import FastAPI
 from fastapi import Depends
@@ -12,8 +20,19 @@ import pandas as pd
 from fastapi import File, UploadFile, HTTPException
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
+from io import StringIO
+
+
 class PredictRequest(BaseModel):
     data: List[List[float]]
+
+    @validator("data")
+    def check_dimensionality(cls, v):
+        for point in v:
+            if len(point) != n_features:
+                raise ValueError(f"Each data point must contain {n_features} features")
+
+        return v
 
 
 class PredictResponse(BaseModel):
@@ -21,29 +40,34 @@ class PredictResponse(BaseModel):
 
 
 app = FastAPI()
-model = Model()
 
-#TODO: Find out how to feed the API inputs with a csv maybe
-@app.post("/predict")
-def predict(csv_file: UploadFile = File(...)):
-    # return PredictResponse(data=[0.0]) Respond with PredictResponse structure
-
-    try:
-        df = pd.read_csv(csv_file.file).astype(float)
-    except:
-        raise HTTPException(
-            status_code=HTTP_422_UNPROCESSABLE_ENTITY, detail="Unable to process file"
-        )
-    
-    df_n_instances, df_n_features = df.shape
-    if df_n_features != model.n_features:
-        raise HTTPException(
-            status_code=HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Each data point must contain {model.n_features} features",
-        )
-
-    y_pred = model.predict([0.00632,18.00,2.310,0,0.5380,6.5750,65.20,4.0900,1,296.0,15.30,396.90,4.98])
-    y_pred = model.predict(df.to_numpy().reshape(-1, model.n_features))
-    result = PredictResponse(data=[y_pred])
+@app.post("/predict", response_model=PredictResponse)
+def predict(input: PredictRequest, model: Model = Depends(get_model)):
+    X = np.array(input.data)
+    y_pred = model.predict(X)
+    result = PredictResponse(data=y_pred.tolist())
 
     return result
+
+
+@app.post("/predict_csv")
+def predict_csv(csv_file: UploadFile = File(...), model: Model = Depends(get_model)):
+    # AttributeError: 'SpooledTemporaryFile' object has no attribute 'readable'
+    # Design change - this won't work for large files because TemporaryFile allows data to be stored to disc - this is all memory now
+    bytes_data = csv_file.file.read()
+    s = str(bytes_data,'utf-8')
+    data = StringIO(s) 
+    df = pd.read_csv(data)    
+
+    y_pred = model.predict(df.to_numpy().reshape(-1, model.n_features))
+    result = PredictResponse(data=y_pred.tolist())
+
+    return result
+
+
+if __name__ == '__main__':
+    test_client = TestClient(app)
+    data_path = Path(__file__).parent / "tests" / "api" / "data_correct.csv"
+    with open(data_path, "r") as csv_file:
+        response = test_client.post("/predict", files={"file": csv_file})
+        print(response)

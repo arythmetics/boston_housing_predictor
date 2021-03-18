@@ -19,3 +19,8 @@ Reasons for:
 Reasons against:
 - Flask is a far more mature tool than FastAPI. This means support and information is far more rich for Flask over FastAPI.
 
+Request Datatype in CSV vs JSON
+- Would've preferred both
+- CSV needs to be read in as SpooledTemporaryFile, which has a read error when 
+attempting to be accessed by certain modules (in this case pandas)
+- Left it as a TODO for a future version of this microservice

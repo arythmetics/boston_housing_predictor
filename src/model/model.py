@@ -42,17 +42,17 @@ class Model:
             self.model = None
 
 def get_model():
-    return Model()
+    model = Model()
+    return model
+
 
 if __name__ == "__main__":
     model = Model()
-    row = [0.00632,18.00,2.310,0,0.5380,6.5750,65.20,4.0900,1,296.0,15.30,396.90,4.98]
-    model.predict(row)
-    # with mlflow.start_run() as run:
-    #     model.train()
-    #     model.test()
-    #     model.save()
-    #     mlflow.log_artifact(Path(__file__).parent / "model_objects" /"ml_model.joblib")
-    #     mlflow.log_metrics(model.metrics)
-    #     row = [0.00632,18.00,2.310,0,0.5380,6.5750,65.20,4.0900,1,296.0,15.30,396.90,4.98]
-    #     model.predict(row)
+    with mlflow.start_run() as run:
+        model.train()
+        model.test()
+        model.save()
+        mlflow.log_artifact(Path(__file__).parent / "model_objects" /"ml_model.joblib")
+        mlflow.log_metrics(model.metrics)
+        row = [0.00632,18.00,2.310,0,0.5380,6.5750,65.20,4.0900,1,296.0,15.30,396.90,4.98]
+        model.predict(row)
