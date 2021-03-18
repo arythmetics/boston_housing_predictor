@@ -9,6 +9,7 @@ class inputDataset(Dataset):
         # store the inputs and outputs
         self.X, self.y = load_boston(return_X_y=True)
         self.X, self.y = self.X.astype('float32'), self.y.astype('float32')
+        self.n_X = len(self.X[0])
         # ensure target has the right shape
         self.y = self.y.reshape((len(self.y), 1))
  
@@ -34,4 +35,4 @@ class inputDataset(Dataset):
         # prepare data loaders
         train_dl = DataLoader(train, batch_size=32, shuffle=True)
         test_dl = DataLoader(test, batch_size=1024, shuffle=False)
-        return train_dl, test_dl
+        return train_dl, test_dl, self.n_X

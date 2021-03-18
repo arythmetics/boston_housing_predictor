@@ -9,8 +9,8 @@ from numpy import vstack
 
 
 class nn():
-    def __init__(self):
-        self.model = MLP(13)
+    def __init__(self, n_inputs):
+        self.model = MLP(n_inputs)
 
     def train(self, train_dl):
         criterion = MSELoss()

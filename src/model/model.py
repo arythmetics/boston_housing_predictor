@@ -1,3 +1,8 @@
+#TODO: remove after debugging
+from pathlib import Path
+import sys, os
+sys.path.append(os.path.dirname(Path(__file__).parent.parent))
+
 import mlflow
 from mlflow.tracking import MlflowClient
 
@@ -11,12 +16,12 @@ from src.data.dataset import inputDataset
 
 class Model:
     
-    def __init__(self):
-        self.model = nn()
-        self.X_train, self.X_test = inputDataset().prepare_data()
-        self.n_features = len(self.X_train)
+    def __init__(self, load=True):
+        self.X_train, self.X_test, self.n_inputs = inputDataset().prepare_data()
+        self.model = nn(self.n_inputs)
         self.root_path = Path(__file__).parent.parent.parent
-        self.load("76f2e23fe49748a4b1e65f6aa1560e27")
+        if load==True:
+            self.load("9123751989ba44508a0a1b2d5a2cb8bb")
     
     def train(self):
         self.model.train(self.X_train)
@@ -47,12 +52,12 @@ def get_model():
 
 
 if __name__ == "__main__":
-    model = Model()
+    model = Model(load=False)
     with mlflow.start_run() as run:
         model.train()
         model.test()
         model.save()
         mlflow.log_artifact(Path(__file__).parent / "model_objects" /"ml_model.joblib")
         mlflow.log_metrics(model.metrics)
-        row = [0.00632,18.00,2.310,0,0.5380,6.5750,65.20,4.0900,1,296.0,15.30,396.90,4.98]
+        row = [0.00632,18.00,2.310,0,0.5380,6.5750,65.20,4.0900,1,296.0,15.30] #,396.90,4.98]
         model.predict(row)
