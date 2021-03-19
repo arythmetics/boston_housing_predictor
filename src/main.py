@@ -24,6 +24,7 @@ from io import StringIO
 
 
 class PredictRequest(BaseModel):
+    # Class to wrap and handle exceptions from user input in API
     data: List[float]
 
     @validator("data")
@@ -33,6 +34,7 @@ class PredictRequest(BaseModel):
         return i
 
 class PredictResponse(BaseModel):
+    # Class to define output of API
     data: List[float]
 
 
@@ -61,11 +63,3 @@ def predict_csv(csv_file: UploadFile = File(...), model: Model = Depends(get_mod
     result = PredictResponse(data=y_pred.tolist())
 
     return result
-
-
-if __name__ == '__main__':
-    test_client = TestClient(app)
-    data_path = Path(__file__).parent / "tests" / "api" / "data_correct.csv"
-    with open(data_path, "r") as csv_file:
-        response = test_client.post("/predict", files={"file": csv_file})
-        print(response)

@@ -24,3 +24,12 @@ Request Datatype in CSV vs JSON
 - CSV needs to be read in as SpooledTemporaryFile, which has a read error when 
 attempting to be accessed by certain modules (in this case pandas)
 - Left it as a TODO for a future version of this microservice
+
+Model Class Abstraction
+- Decided to create a universal Model class that would arbitrate between detailed model code and the API,
+- Reason was to make it easy for new models to be swapped in by only editing one file.
+
+Future Improvements
+- Allow user input to include multiple observations, not just one.
+- Create option to switch between Flask and FastAPI.
+- Generalize nn.py so that neural networks can be swapped out as easily as the Model class in model.py
